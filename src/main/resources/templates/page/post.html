@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<!-- index.html 고유 CSS 추가 -->
+<th:block layout:fragment="css">
+
+</th:block>
+<!-- index.html 고유 스크립트 추가 -->
+<th:block layout:fragment="script">
+
+</th:block>
+
+<!-- Content -->
+<div layout:fragment="content">
+    <div class="pt-3 pb-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8 ml-auto mr-auto">
+                    <div class="row">
+                        <div class="col-md-2 col-4">
+                            <button type="button" class="btn btn-block text-left" onclick="javascript:history.back();">
+                                <i class="mdi mdi-arrow-left"></i>
+                            </button>
+                        </div>
+                        <div class="col-md-8 col-4 col-form-label text-center">
+                            상세 내용
+                        </div>
+                        <div class="col-md-2 col-4">
+<!--                            <button type="button" class="btn btn-block text-right" onclick="document.forms['postForm'].submit()">-->
+<!--                                <i class="mdi mdi-check"></i> <small>수정</small>-->
+<!--                            </button>-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8 ml-auto mr-auto">
+                <div class="row">
+                    <div class="col-8 col-form-label">
+                        <h4>[[ ${board.title} ]]</h4>
+                    </div>
+                    <div class="col-4 text-right">
+                        <small class="font-sm text-secondary" th:text="${board.author}"></small>
+                        <br><small class="font-sm text-secondary" th:text="${board.getCreateDt('yyyy-MM-dd HH:mm')}"></small>
+                    </div>
+                </div>
+                <hr>
+                <div style="min-height: 300px;">
+                    <div th:text="${board.content}"></div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-md-4 col-6 ml-auto">
+                        <input type="text" class="form-control underline">
+                    </div>
+                    <div class="col-md-4 col-6">
+                        <div class="row">
+                            <div class="col-6 pr-1">
+                                <button type="button" class="btn btn-block">
+                                    수정
+                                </button>
+                            </div>
+                            <div class="col-6 pl-1">
+                                <button type="button" class="btn btn-block">
+                                    삭제
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="pt-5 pb-5"></div>
+                <div class="row mb-3">
+                    <div class="col-9">
+                        등록된 댓글( [[${replyCount}]] )
+                    </div>
+                    <div class="col-3">
+                        <button type="button" class="btn btn-sm btn-block" data-toggle="collapse" data-target="#replyFormArea" aria-expanded="false" aria-controls="replyFormArea">
+                            <i class="mdi mdi-plus"></i> 댓글달기
+                        </button>
+                    </div>
+                </div>
+                <hr>
+                <div class="mb-5 collapse" id="replyFormArea">
+                    <form name="replyForm">
+                        <textarea class="form-control underline mb-3" rows="2" placeholder="댓글 내용"></textarea>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <input type="text" class="form-control" placeholder="작성자">
+                            </div>
+                            <div class="col-md-4">
+                                <input type="text" class="form-control" placeholder="비밀번호">
+                            </div>
+                            <div class="col-md-4">
+                                <button type="button" class="btn btn-block text-primary">
+                                    <i class="mdi mdi-plus"></i> 등록하기
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div th:if="${replies.length > 0}" class="mb-5" th:each="item : ${replies}">
+                    <div>
+                        <div class="mb-2">[[ ${item.author} ]] <small class="text-secondary">[[ ${item..getCreateDt('yyyy-MM-dd HH:mm')} ]]</small></div>
+                        <div class="mb-2 pl-3">
+                            <i class="mdi mdi-subdirectory-arrow-right"></i>
+                            [[ ${item.content} ]]
+                        </div>
+                        <hr>
+                    </div>
+                </div>
+                <div th:else class="text-secondary text-center pt-5 pb-5">
+                    등록된 댓글이 없습니다
+                </div>
+            </div>
+        </div>
+    </div>
+    <div>
+    </div>
+</div>
+</html>
