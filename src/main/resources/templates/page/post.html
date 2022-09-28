@@ -9,13 +9,13 @@
 </th:block>
 <!-- index.html 고유 스크립트 추가 -->
 <th:block layout:fragment="script">
-
+    <script src="/js/page/post.js"></script>
 </th:block>
 
 <!-- Content -->
 <div layout:fragment="content">
-    <div class="pt-3 pb-5">
-        <div class="container">
+    <nav class="navbar navbar-light nav-divider fixed-top">
+        <div class="container d-block">
             <div class="row">
                 <div class="col-md-8 ml-auto mr-auto">
                     <div class="row">
@@ -27,59 +27,70 @@
                         <div class="col-md-8 col-4 col-form-label text-center">
                             상세 내용
                         </div>
-                        <div class="col-md-2 col-4">
-<!--                            <button type="button" class="btn btn-block text-right" onclick="document.forms['postForm'].submit()">-->
-<!--                                <i class="mdi mdi-check"></i> <small>수정</small>-->
-<!--                            </button>-->
+                        <div class="col-md-2 col-4 text-right">
+<!--                            <div class="dropdown">-->
+<!--                                <button class="btn pt-1 pb-1" type="button" data-toggle="dropdown" aria-expanded="false">-->
+<!--                                    <i class="mdi mdi-dots-vertical"></i>-->
+<!--                                </button>-->
+<!--                                <div class="dropdown-menu dropdown-menu-right">-->
+<!--                                    <a class="dropdown-item" href="#">수정</a>-->
+<!--                                    <a class="dropdown-item" href="#">삭제</a>-->
+<!--                                </div>-->
+<!--                            </div>-->
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+    </nav>
+    <div class="pt-5 pb-5"></div>
     <div class="container">
         <div class="row">
             <div class="col-md-8 ml-auto mr-auto">
                 <div class="row">
-                    <div class="col-8 col-form-label">
-                        <h4>[[ ${board.title} ]]</h4>
+                    <div class="col-md-8 col-form-label">
+                        <h4 class="m-0">[[ ${board.title} ]]</h4>
                     </div>
-                    <div class="col-4 text-right">
-                        <small class="font-sm text-secondary" th:text="${board.author}"></small>
-                        <br><small class="font-sm text-secondary" th:text="${board.getCreateDt('yyyy-MM-dd HH:mm')}"></small>
+                    <div class="col-md-4 text-right">
+                        <div class="d-flex h-100 align-items-end justify-content-end">
+                            <small class="font-sm text-secondary" th:text="${board.author}"></small>
+                            <small class="font-sm text-secondary" th:text="${board.getCreateDt('yyyy-MM-dd HH:mm')}"></small>
+                        </div>
                     </div>
                 </div>
                 <hr>
                 <div style="min-height: 300px;">
-                    <div th:text="${board.content}"></div>
+                    <div th:utext="${board.contentToHtml()}"></div>
                 </div>
-                <hr>
-                <div class="row">
-                    <div class="col-md-4 col-6 ml-auto">
-                        <input type="text" class="form-control underline">
-                    </div>
-                    <div class="col-md-4 col-6">
-                        <div class="row">
-                            <div class="col-6 pr-1">
-                                <button type="button" class="btn btn-block">
-                                    수정
-                                </button>
-                            </div>
-                            <div class="col-6 pl-1">
-                                <button type="button" class="btn btn-block">
-                                    삭제
-                                </button>
+                <form name="editForm">
+                    <input type="hidden" name="board_id" th:value="${board.id}">
+                    <div class="row">
+                        <div class="col-md-4 col-6">
+                            <input type="text" class="form-control underline text-center" placeholder="비밀번호">
+                        </div>
+                        <div class="col-md-4 col-6 ml-auto">
+                            <div class="row">
+                                <div class="col-6 pr-1">
+                                    <button type="button" class="btn btn-block text-primary" onclick="onClickEdit(this.form, 'edit')">
+                                        수정
+                                    </button>
+                                </div>
+                                <div class="col-6 pl-1">
+                                    <button type="button" class="btn btn-block text-danger" onclick="onClickEdit(this.form, 'delete')">
+                                        삭제
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                </form>
                 <div class="pt-5 pb-5"></div>
                 <div class="row mb-3">
                     <div class="col-9">
                         등록된 댓글( [[${replyCount}]] )
                     </div>
                     <div class="col-3">
-                        <button type="button" class="btn btn-sm btn-block" data-toggle="collapse" data-target="#replyFormArea" aria-expanded="false" aria-controls="replyFormArea">
+                        <button type="button" class="btn btn-sm btn-block" id="btnShowReplyForm" data-toggle="collapse" data-target="#replyFormArea" aria-expanded="false" aria-controls="replyFormArea">
                             <i class="mdi mdi-plus"></i> 댓글달기
                         </button>
                     </div>
@@ -87,17 +98,19 @@
                 <hr>
                 <div class="mb-5 collapse" id="replyFormArea">
                     <form name="replyForm">
-                        <textarea class="form-control underline mb-3" rows="2" placeholder="댓글 내용"></textarea>
+                        <input type="hidden" name="board_id" th:value="${board.id}">
+                        <textarea class="form-control underline mb-3" name="content" rows="2" placeholder="댓글 내용"></textarea>
+                        <p class="error-msg text-danger"></p>
                         <div class="row">
                             <div class="col-md-4">
-                                <input type="text" class="form-control" placeholder="작성자">
+                                <input type="text" name="author" class="form-control text-center" required="required" placeholder="작성자" maxlength="10" autocomplete="off">
                             </div>
                             <div class="col-md-4">
-                                <input type="text" class="form-control" placeholder="비밀번호">
+                                <input type="text" name="password" class="form-control text-center input-pwd" required="required" placeholder="비밀번호" maxlength="4" autocomplete="off">
                             </div>
                             <div class="col-md-4">
-                                <button type="button" class="btn btn-block text-primary">
-                                    <i class="mdi mdi-plus"></i> 등록하기
+                                <button type="submit" class="btn btn-block text-primary">
+                                    <i class="mdi mdi-check"></i> 등록하기
                                 </button>
                             </div>
                         </div>
@@ -105,7 +118,7 @@
                 </div>
                 <div th:if="${replies.length > 0}" class="mb-5" th:each="item : ${replies}">
                     <div>
-                        <div class="mb-2">[[ ${item.author} ]] <small class="text-secondary">[[ ${item..getCreateDt('yyyy-MM-dd HH:mm')} ]]</small></div>
+                        <div class="mb-2">[[ ${item.author} ]] <small class="text-secondary">[[ ${item.getCreateDt('yyyy-MM-dd HH:mm')} ]]</small></div>
                         <div class="mb-2 pl-3">
                             <i class="mdi mdi-subdirectory-arrow-right"></i>
                             [[ ${item.content} ]]

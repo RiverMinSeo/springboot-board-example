@@ -27,6 +27,10 @@ public class BoardDto {
         return (this.modifiedDate != null) ? this.modifiedDate.format(DateTimeFormatter.ofPattern(format)) : null;
     }
 
+    public String contentToHtml() {
+        return this.content.replaceAll("\r\n","<br>");
+    }
+
     public Board toEntity(){
         Board board = Board.builder()
                 .author(author)
