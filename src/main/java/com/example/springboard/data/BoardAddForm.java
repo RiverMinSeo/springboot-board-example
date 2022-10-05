@@ -1,5 +1,6 @@
-package com.example.springboard.dto;
+package com.example.springboard.data;
 
+import com.example.springboard.dto.BoardDto;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -8,7 +9,7 @@ import java.io.Serializable;
 
 @Getter
 @Setter
-public class BoardFormDto implements Serializable {
+public class BoardAddForm implements Serializable {
   @NotBlank(message = "제목을 입력해 주세요")
   String title;
 

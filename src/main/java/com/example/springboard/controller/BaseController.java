@@ -1,7 +1,8 @@
 package com.example.springboard.controller;
 
+import com.example.springboard.data.BoardCheckForm;
 import com.example.springboard.dto.BoardDto;
-import com.example.springboard.dto.BoardFormDto;
+import com.example.springboard.data.BoardAddForm;
 import com.example.springboard.dto.ReplyDto;
 import com.example.springboard.service.BoardService;
 import com.example.springboard.service.ReplyService;
@@ -10,11 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -51,12 +48,24 @@ public class BaseController {
     }
 
     @PostMapping("/post")
-    public String addPost(@Validated @ModelAttribute("board") BoardFormDto form, BindingResult result, Model model) {
+    public String addPost(@Validated @ModelAttribute("board") BoardAddForm form, BindingResult result, Model model) {
         if(result.hasErrors()){
             return "page/form";
         }
         Long insertedId = boardService.setPost(form.toDto());
         System.out.println(insertedId);
         return "redirect:/";
+    }
+
+    @PostMapping("/edit")
+    public String editPost(@Validated @ModelAttribute("board") BoardCheckForm form, BindingResult result, Model model) {
+        System.out.println(form.toString());
+        if(result.hasErrors()){
+            String redirect = "redirect:/"+form.getBoardId();
+            System.out.println(redirect);
+            return redirect;
+        }else{
+            return "redirect:/";
+        }
     }
 }

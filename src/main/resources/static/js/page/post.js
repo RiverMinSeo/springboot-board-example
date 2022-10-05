@@ -3,9 +3,10 @@
 //    var boardId = document.forms['editForm'].bord_id;
 })();
 //
-//function onClickEdit(form, action){
-//
-//}
+function onClickEdit(form, action){
+    form.action = (action == 'delete') ? '/delete' : '/edit';
+    form.submit();
+}
 //
 //function onClickAddReply(form){
 //    var container = document.getElementById('replyFormArea');
