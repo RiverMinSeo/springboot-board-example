@@ -28,8 +28,6 @@ public class BaseController {
     @Autowired
     ReplyService replyService;
 
-
-
     @GetMapping("/")
     public String index(@RequestParam(value = "page_no", defaultValue = "1", required = false) int pageNo, Model model) {
         Long totalBoardCnt = boardService.getBoardCount();
