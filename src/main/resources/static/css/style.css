@@ -22,3 +22,21 @@ input.input-pwd {
 .navbar.nav-divider{
     box-shadow: 0 2px 1px -1px rgba(0, 0, 0, .3);
 }
+
+.no-border{
+    border: 0 !important;
+}
+
+.txt-ellipsis{
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+}
+
+.txt-ellipsis-2line{
+    overflow: hidden;
+    text-overflow: ellipsis;
+    -webkit-line-clamp: 2;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+}
