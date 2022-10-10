@@ -44,6 +44,7 @@ public class BoardService {
         List<Integer> pageList = new ArrayList<>();
         Integer totalLastPageNum = (int)(Math.ceil((Double.valueOf(totalCount)/PAGE_POST_COUNT)));
         Integer pageGroup = (int)(Math.ceil((totalLastPageNum / BLOCK_PAGE_NUM_COUNT)));
+        pageGroup = (pageGroup == 0) ? 1 : pageGroup;
         int pageTotal = Math.toIntExact(totalCount);
         int pageStart = 0;
         int pageEnd = (pageTotal <= BLOCK_PAGE_NUM_COUNT) ?  pageTotal : BLOCK_PAGE_NUM_COUNT;
