@@ -8,7 +8,7 @@ import java.time.format.DateTimeFormatter;
 
 @Getter
 @Setter
-@ToString   // 객체가 가지고 있는 정보나 값들을 문자열로 만들어 리턴하는 메서드
+@ToString
 @NoArgsConstructor
 public class BoardDto {
     private Long id;

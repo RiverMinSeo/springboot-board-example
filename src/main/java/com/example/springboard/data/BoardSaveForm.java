@@ -11,7 +11,8 @@ import java.io.Serializable;
 @ToString()
 @Getter
 @Setter
-public class BoardAddForm implements Serializable {
+public class BoardSaveForm implements Serializable {
+  Long id;
   @NotBlank(message = "제목을 입력해 주세요")
   String title;
 
@@ -26,6 +27,7 @@ public class BoardAddForm implements Serializable {
 
   public BoardDto toDto(){
     return BoardDto.builder()
+            .id(id)
             .title(title)
             .content(content)
             .author(author)

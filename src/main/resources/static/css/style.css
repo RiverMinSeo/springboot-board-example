@@ -3,7 +3,8 @@
     height: 50px;
     border-radius: 50%;
 }
-.form-control.underline{
+.form-control.underline,
+.card.underline{
     border-left: 0;
     border-right: 0;
     border-top: 0;

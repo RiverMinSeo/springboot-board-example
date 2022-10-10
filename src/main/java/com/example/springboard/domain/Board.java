@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
+import java.util.List;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
@@ -26,11 +28,21 @@ public class Board extends Base {
     @Column(name="content", columnDefinition = "TEXT", nullable = false)
     private String content;
 
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name="tb_board_id")
+    private List<Reply> replies;
+
     @Builder
     public Board(String author, String password, String title, String content) {
         this.author = author;
         this.password = password;
         this.title = title;
         this.content = content;
+    }
+
+    public void update(String title, String content, String author) {
+        this.title = title;
+        this.content = content;
+        this.author = author;
     }
 }

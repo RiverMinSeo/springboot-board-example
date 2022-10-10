@@ -5,7 +5,13 @@
       layout:decorate="~{layout}">
 <!-- index.html 고유 CSS 추가 -->
 <th:block layout:fragment="css">
-
+<style>
+    .txt-ellipsis{
+        overflow:hidden;
+        text-overflow:ellipsis;
+        white-space:nowrap;
+    }
+</style>
 </th:block>
 <!-- index.html 고유 스크립트 추가 -->
 <th:block layout:fragment="script">
@@ -14,42 +20,75 @@
 
 <!-- Content -->
 <div layout:fragment="content">
+    <nav class="navbar navbar-light nav-divider fixed-top bg-white">
+        <div class="container d-block">
+            <div class="row">
+                <div class="col-9">
+                    <h4>BOARD <small class="text-secondary">Spring boot</small></h4>
+                </div>
+                <div class="col-3">
+                    <a th:href="@{/form}" class="btn btn-block">
+                        <i class="mdi mdi-plus"></i> <span class="d-sm-inline-block d-none">게시물 추가</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
     <div class="pt-5 pb-5"></div>
     <div class="container">
-        <table class="table table-hover">
-            <thead>
-            <tr>
-                <th>#</th>
-                <th>제목</th>
-                <th>내용</th>
-                <th>작성자</th>
-                <th>생성일</th>
-            </tr>
-            </thead>
-            <tbody th:if="${not #lists.isEmpty(boardList)}">
-                <tr th:each="item : ${boardList}" th:onclick="|location.href='@{/}${item.id}'|">
-                    <td th:text="${item.id}"></td>
-                    <td th:text="${item.title}"></td>
-                    <td th:text="${item.content}"></td>
-                    <td th:text="${item.author}"></td>
-                    <td th:text="${item.getCreateDt('yyyy.M.d H:m')}"></td>
-                </tr>
-            </tbody>
-            <tbody th:unless="${not #lists.isEmpty(boardList)}">
+        <div style="min-height: 500px;">
+            <table class="table table-hover">
+                <thead>
                 <tr>
-                   <td colspan="5" class="text-center text-secondary pt-5 pb-5">
-                       등록된 게시물이 없습니다.
-                   </td>
+                    <th>#</th>
+                    <th>제목</th>
+                    <th>내용</th>
+                    <th>작성자</th>
+                    <th>작성일시</th>
                 </tr>
-            </tbody>
-        </table>
-    </div>
-    <div class="fixed-bottom">
-        <div class="container">
-            <a th:href="@{/form}"
-               class="btn btn-block btn-floating btn-primary d-flex justify-content-center align-items-center ml-auto mr-5 mb-5">
-                <i class="mdi mdi-plus"></i>
-            </a>
+                </thead>
+                <tbody th:if="${not #lists.isEmpty(boardList)}">
+                <tr th:each="item, stat : ${boardList}" th:onclick="|location.href='@{/}${item.id}'|">
+                    <td th:text="${((pageNo-1) * pageSize) + stat.count}"></td>
+                    <td style="width:200px;">
+                        <div style="max-width:200px;" class="txt-ellipsis">
+                            [[ ${item.title} ]]
+                        </div>
+                    </td>
+                    <td style="width: 400px;">
+                        <div style="max-width:400px" class="txt-ellipsis">
+                            [[ ${item.content} ]]
+                        </div>
+                    </td>
+                    <td th:text="${item.author}"></td>
+                    <td>
+                        <small>
+                            [[ ${item.getCreateDt('yyyy.MM.dd HH:mm')} ]]
+                        </small>
+                    </td>
+                </tr>
+                </tbody>
+                <tbody th:unless="${not #lists.isEmpty(boardList)}">
+                <tr>
+                    <td colspan="5" class="text-center text-secondary pt-5 pb-5">
+                        등록된 게시물이 없습니다.
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="d-flex justify-content-center" th:if="${not #lists.isEmpty(pageList)}">
+            <ul class="pagination">
+                <li class="page-item" th:classappend="${(pageList[0] == 1) ? 'disabled' : ''}">
+                    <a class="page-link" th:href="@{/(page_no=${(pageList[0]) - 1})}">Prev</a>
+                </li>
+                <li th:each="item : ${pageList}" class="page-item" th:classappend="${(pageNo == item) ? 'active' : ''}">
+                    <a class="page-link" th:href="@{/(page_no=${item})}" th:text="${item}"></a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" th:href="@{/(page_no=${(pageList[#lists.size(pageList) - 1]) + 1})}">Next</a>
+                </li>
+            </ul>
         </div>
     </div>
 </div>

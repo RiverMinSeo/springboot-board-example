@@ -1,5 +1,6 @@
 package com.example.springboard.dto;
 
+import com.example.springboard.domain.Board;
 import com.example.springboard.domain.Reply;
 import lombok.*;
 
@@ -18,6 +19,11 @@ public class ReplyDto {
   private LocalDateTime createdDate;
   private LocalDateTime modifiedDate;
 
+  private Long tbBoardId;
+
+  private int replyCnt;
+
+
   public String getCreateDt(String format) {
     return (this.createdDate != null) ? this.createdDate.format(DateTimeFormatter.ofPattern(format)) : null;
   }
@@ -35,16 +41,18 @@ public class ReplyDto {
             .author(author)
             .password(password)
             .content(content)
+            .tbBoardId(tbBoardId)
             .build();
   }
 
   @Builder
-  public ReplyDto(Long id, String author, String content, String password, LocalDateTime createdDate, LocalDateTime modifiedDate) {
+  public ReplyDto(Long id, String author, String content, String password, LocalDateTime createdDate, LocalDateTime modifiedDate, Long tbBoardId) {
     this.id = id;
     this.author = author;
     this.content = content;
     this.password = password;
     this.createdDate = createdDate;
     this.modifiedDate = modifiedDate;
+    this.tbBoardId = tbBoardId;
   }
 }

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<!-- index.html 고유 CSS 추가 -->
+<th:block layout:fragment="css">
+  <style>
+    html, body{
+      width: 100%;
+      height: 100%;
+    }
+    body > div{
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+</th:block>
+<!-- index.html 고유 스크립트 추가 -->
+<th:block layout:fragment="script">
+  <script src="/js/page/edit.js"></script>
+</th:block>
+
+<!-- Content -->
+<div layout:fragment="content">
+  <div class="d-flex w-100 h-100 align-items-center justify-content-center">
+    <div class="text-center">
+      <h1>404</h1>
+      <div>Page Not Found!</div>
+    </div>
+  </div>
+</div>
+</html>

@@ -5,16 +5,27 @@
       layout:decorate="~{layout}">
 <!-- index.html 고유 CSS 추가 -->
 <th:block layout:fragment="css">
-
+<style>
+    .repliy-item:last-child .card.underline{
+        border-bottom: 0;
+    }
+</style>
 </th:block>
 <!-- index.html 고유 스크립트 추가 -->
 <th:block layout:fragment="script">
+    <script th:inline="javascript">
+    /*<![CDATA[*/
+
+    var boardId = "[[${board.id}]]";
+
+    /*]]>*/
+    </script>
     <script src="/js/page/post.js"></script>
 </th:block>
 
 <!-- Content -->
 <div layout:fragment="content">
-    <nav class="navbar navbar-light nav-divider fixed-top">
+    <nav class="navbar navbar-light nav-divider fixed-top bg-white">
         <div class="container d-block">
             <div class="row">
                 <div class="col-md-8 ml-auto mr-auto">
@@ -28,15 +39,9 @@
                             상세 내용
                         </div>
                         <div class="col-md-2 col-4 text-right">
-<!--                            <div class="dropdown">-->
-<!--                                <button class="btn pt-1 pb-1" type="button" data-toggle="dropdown" aria-expanded="false">-->
-<!--                                    <i class="mdi mdi-dots-vertical"></i>-->
-<!--                                </button>-->
-<!--                                <div class="dropdown-menu dropdown-menu-right">-->
-<!--                                    <a class="dropdown-item" href="#">수정</a>-->
-<!--                                    <a class="dropdown-item" href="#">삭제</a>-->
-<!--                                </div>-->
-<!--                            </div>-->
+                            <a th:href="@{'/'+${board.id}+'/edit'}" class="btn btn-block">
+                                <i class="mdi mdi-pencil-outline"></i>
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -53,44 +58,28 @@
                     </div>
                     <div class="col-md-4 text-right">
                         <div class="d-flex h-100 align-items-end justify-content-end">
-                            <small class="font-sm text-secondary" th:text="${board.author}"></small>
-                            <small class="font-sm text-secondary" th:text="${board.getCreateDt('yyyy-MM-dd HH:mm')}"></small>
+                            <div>
+                                <small class="font-sm">
+                                    <i class="mdi mdi-account"></i>
+                                    <strong>[[ ${board.author} ]]</strong> <span class="text-secondary"></span>
+                                </small>
+                                <br class="d-md-block d-none"><small class="font-sm text-secondary">
+                                [[ ${board.getCreateDt('yyyy-MM-dd HH:mm')} ]] 등록
+                            </small>
+                            </div>
                         </div>
                     </div>
                 </div>
                 <hr>
-                <div style="min-height: 300px;">
-                    <div th:utext="${board.contentToHtml()}"></div>
+                <div style="min-height: 200px;">
+                    <div class="text-secondary" th:utext="${board.contentToHtml()}"></div>
                 </div>
-                <form name="editForm" method="POST">
-                    <input type="hidden" name="boardId" th:value="${board.id}">
-                    <div class="row">
-                        <div class="col-md-4">
-                            <input type="text" class="form-control underline text-center mb-1" name="password" placeholder="비밀번호" maxlength="4">
-                            <p class="error_msg text-center text-danger mb-3"></p>
-                        </div>
-                        <div class="col-md-4 ml-auto">
-                            <div class="row">
-                                <div class="col-6 pr-1">
-                                    <button type="button" class="btn btn-block text-primary" onclick="javascript:onClickEdit(this.form,'edit');">
-                                        수정
-                                    </button>
-                                </div>
-                                <div class="col-6 pl-1">
-                                    <button type="button" class="btn btn-block text-danger" onclick="javascript:onClickEdit(this.form,'delete');">
-                                        삭제
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </form>
                 <div class="pt-5 pb-5"></div>
                 <div class="row mb-3">
-                    <div class="col-9">
+                    <div class="col-md-9 col-8">
                         등록된 댓글( [[${replyCount}]] )
                     </div>
-                    <div class="col-3">
+                    <div class="col-md-3 col-4">
                         <button type="button" class="btn btn-sm btn-block" id="btnShowReplyForm" data-toggle="collapse" data-target="#replyFormArea" aria-expanded="false" aria-controls="replyFormArea">
                             <i class="mdi mdi-plus"></i> 댓글달기
                         </button>
@@ -98,37 +87,88 @@
                 </div>
                 <hr>
                 <div class="mb-5 collapse" id="replyFormArea">
-                    <form name="replyForm">
-                        <input type="hidden" name="board_id" th:value="${board.id}">
-                        <textarea class="form-control underline mb-3" name="content" rows="2" placeholder="댓글 내용"></textarea>
-                        <p class="error-msg text-danger"></p>
-                        <div class="row">
-                            <div class="col-md-4">
-                                <input type="text" name="author" class="form-control text-center" required="required" placeholder="작성자" maxlength="10" autocomplete="off">
+                    <div id="replyForm">
+                        <form name="replyForm" method="POST" th:object="${replyForm}">
+                            <textarea class="form-control underline mb-3" th:field="*{content}" rows="2" placeholder="댓글 내용"></textarea>
+                            <p class="text-danger font-sm" th:if="${#fields.hasErrors('content')}" th:errors="*{content}">Name Error</p>
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <div class="row mb-3">
+                                        <div class="col pr-1">
+                                            <input type="text" th:field="*{author}" class="form-control text-center" required="required" placeholder="작성자" maxlength="10" autocomplete="off">
+                                            <p class="text-danger font-sm" th:if="${#fields.hasErrors('author')}" th:errors="*{author}">Name Error</p>
+                                        </div>
+                                        <div class="col pl-1">
+                                            <input type="text" th:field="*{password}" class="form-control text-center input-pwd" required="required" placeholder="비밀번호" maxlength="4" autocomplete="off">
+                                            <p class="text-danger font-sm" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Name Error</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <button type="button" class="btn btn-block text-primary" onclick="onClickAddReply(this.form)">
+                                        <i class="mdi mdi-check"></i> 등록하기
+                                    </button>
+                                </div>
                             </div>
-                            <div class="col-md-4">
-                                <input type="text" name="password" class="form-control text-center input-pwd" required="required" placeholder="비밀번호" maxlength="4" autocomplete="off">
-                            </div>
-                            <div class="col-md-4">
-                                <button type="submit" class="btn btn-block text-primary">
-                                    <i class="mdi mdi-check"></i> 등록하기
-                                </button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-                <div th:if="${replies.length > 0}" class="mb-5" th:each="item : ${replies}">
-                    <div>
-                        <div class="mb-2">[[ ${item.author} ]] <small class="text-secondary">[[ ${item.getCreateDt('yyyy-MM-dd HH:mm')} ]]</small></div>
-                        <div class="mb-2 pl-3">
-                            <i class="mdi mdi-subdirectory-arrow-right"></i>
-                            [[ ${item.content} ]]
-                        </div>
-                        <hr>
+                        </form>
                     </div>
                 </div>
-                <div th:else class="text-secondary text-center pt-5 pb-5">
-                    등록된 댓글이 없습니다
+                <div id="replies" class="pb-5">
+                    <div th:if="${not #lists.isEmpty(replies)}">
+                        <div class="mb-3 repliy-item" th:each="item : ${replies}" th:id="${'replyItem-' + item.id}">
+                            <form th:name="${'replyForm-' + item.id}" th:id="${'replyForm-' + item.id}">
+                                <input type="hidden" name="id" th:value="${item.id}">
+                                <div class="card underline">
+                                    <div class="card-body pt-1 pb-1">
+                                        <div class="row mb-2">
+                                            <div class="col-10 col-form-label">
+                                                <i class="mdi mdi-account"></i>
+                                                <strong>[[ ${item.author} ]]</strong> <small class="text-secondary">[[ ${item.getCreateDt('yyyy.MM.dd HH:mm')} ]]</small>
+                                            </div>
+                                            <div class="col-2 text-right">
+                                                <button type="button" class="btn btn-sm btn-block btn-edit" onclick="onClickToggleEdit(this.form, 'edit')">
+                                                    <i class="mdi mdi-pencil-outline"></i>
+                                                </button>
+                                                <button type="button" class="btn btn-sm d-none btn-cancel text-secondary" onclick="onClickToggleEdit(this.form, 'cancel')">
+                                                    <i class="mdi mdi-close"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="mb-2 display-content d-block text-secondary">
+                                            <div class="pl-3" th:utext="${item.contentToHtml()}"></div>
+                                        </div>
+                                        <div class="mb-2 edit-content d-none">
+                                            <textarea class="form-control underline mb-3" name="content" rows="2">[[ ${item.content} ]]</textarea>
+                                            <p class="text-danger font-sm error-msg error-content"></p>
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <input type="text" class="form-control text-center input-pwd" name="password" placeholder="비밀번호" maxlength="4">
+                                                    <p class="text-danger font-sm error-msg error-password"></p>
+                                                </div>
+                                                <div class="col-md-4 text-right ml-auto">
+                                                    <div class="row">
+                                                        <div class="col pr-1">
+                                                            <button type="button" class="btn btn-block btn-sm text-danger" onclick="onClickDeleteReply(this.form)">
+                                                                <i class="mdi mdi-delete-outline"></i> 삭제
+                                                            </button>
+                                                        </div>
+                                                        <div class="col pl-1">
+                                                            <button type="button" class="btn btn-block btn-sm text-primary" onclick="onClickSaveReply(this.form)">
+                                                                <i class="mdi mdi-check"></i> 저장
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div th:unless="${not #lists.isEmpty(replies)}" class="text-secondary text-center pt-5 pb-5">
+                        등록된 댓글이 없습니다
+                    </div>
                 </div>
             </div>
         </div>

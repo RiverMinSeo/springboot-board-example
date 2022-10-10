@@ -1,13 +1,11 @@
 package com.example.springboard.domain;
 
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 
+@ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Entity
@@ -23,19 +21,18 @@ public class Reply extends  Base{
   @Column(name="content", columnDefinition = "TEXT", nullable = false)
   private String content;
 
-  @Column(name = "tb_board_id", insertable = false, updatable = false)
+  @Column(name = "tb_board_id")
   private Long tbBoardId;
 
-  @ManyToOne(cascade = CascadeType.ALL)
-  @JoinColumn(name = "tb_board_id")
-  private Board board;
-
   @Builder
-  public Reply(String author, String password, String content, Long tbBoardId, Board board) {
+  public Reply(String author, String password, String content, Long tbBoardId) {
     this.author = author;
     this.password = password;
     this.content = content;
     this.tbBoardId = tbBoardId;
-    this.board = board;
+  }
+
+  public void update(String content) {
+    this.content = content;
   }
 }

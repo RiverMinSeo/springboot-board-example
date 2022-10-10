@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<!-- index.html 고유 CSS 추가 -->
+<th:block layout:fragment="css">
+
+</th:block>
+<!-- index.html 고유 스크립트 추가 -->
+<th:block layout:fragment="script">
+  <script src="/js/page/edit.js"></script>
+</th:block>
+
+<!-- Content -->
+<div layout:fragment="content">
+  <nav class="navbar navbar-light nav-divider bg-white mb-5">
+    <div class="container d-block">
+      <div class="row">
+        <div class="col-md-8 ml-auto mr-auto">
+          <div class="row">
+            <div class="col-md-2 col-4">
+              <button type="button" class="btn btn-block text-left" onclick="javascript:history.back();">
+                <i class="mdi mdi-arrow-left"></i>
+              </button>
+            </div>
+            <div class="col-md-8 col-4 col-form-label text-center">
+              내용 수정
+            </div>
+            <div class="col-md-2 col-4 text-right">
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-8 ml-auto mr-auto">
+        <form name="editForm" method="post" th:object="${board}">
+          <input type="hidden" th:field="*{id}">
+          <div class="mb-3">
+            <input type="text" class="form-control underline mb-1" th:field="*{title}"
+                   placeholder="제목을 입력하세요." maxlength="50" th:classappend="${(#fields.hasErrors('title')) ? 'border-danger' : ''}">
+            <p class="text-danger font-sm" th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></p>
+          </div>
+          <div class="mb-5">
+                        <textarea class="form-control underline mb-1" rows="10" th:field="*{content}"
+                                  placeholder="내용을 입력하세요" th:classappend="${(#fields.hasErrors('content')) ? 'border-danger' : ''}"></textarea>
+            <p class="text-danger font-sm" th:if="${#fields.hasErrors('content')}" th:errors="*{content}"></p>
+          </div>
+          <div class="row">
+            <div class="col-md-8">
+              <div class="row mb-3">
+                <div class="col pr-1">
+                  <input type="text" class="form-control mb-1 text-center" th:field="*{author}"
+                         placeholder="작성자" th:classappend="${(#fields.hasErrors('author')) ? 'border-danger' : ''}" maxlength="10">
+                  <p class="text-danger font-sm" th:if="${#fields.hasErrors('author')}" th:errors="*{author}"></p>
+                </div>
+                <div class="col pl-1">
+                  <input type="text" class="form-control mb-1 text-center input-pwd" th:field="*{password}"
+                         placeholder="비밀번호" th:classappend="${(#fields.hasErrors('password')) ? 'border-danger' : ''}" maxlength="4">
+                  <p class="text-danger font-sm error-password"></p>
+                  <p class="text-danger font-sm" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="row mb-3">
+                <div class="col">
+                  <button type="button" class="btn btn-block text-danger" onclick="onClickDelete(this.form)">
+                    <i class="mdi mdi-delete-outline"></i> 삭제
+                  </button>
+                </div>
+                <div class="col">
+                  <button type="button" class="btn btn-block text-primary" onclick="this.form.action='/save';this.form.submit()">
+                    <i class="mdi mdi-check"></i> 저장
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div>
+  </div>
+</div>
+</html>
