@@ -9,6 +9,8 @@ import com.example.springboard.dto.ReplyDto;
 import com.example.springboard.service.BoardService;
 import com.example.springboard.service.ReplyService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mobile.device.Device;
+import org.springframework.mobile.device.DeviceUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -29,7 +31,7 @@ public class BaseController {
     ReplyService replyService;
 
     @GetMapping("/")
-    public String index(@RequestParam(value = "page_no", defaultValue = "1", required = false) int pageNo, Model model) {
+    public String index(@RequestParam(value = "page_no", defaultValue = "1", required = false) int pageNo, Model model, Device device) {
         Long totalBoardCnt = boardService.getBoardCount();
         List<BoardDto> boardList = boardService.getBoardlist(pageNo);
         List<Integer> pageList = boardService.getPageList(pageNo, totalBoardCnt);
@@ -37,6 +39,7 @@ public class BaseController {
         model.addAttribute("pageNo", pageNo);
         model.addAttribute("pageSize", BoardService.PAGE_POST_COUNT);
         model.addAttribute("pageList", pageList);
+//        model.addAttribute("isMobile", device.isMobile());
         return "page/index";
     }
 
